@@ -1,0 +1,53 @@
+SERVER:
+  # 环境 dev / test / production
+  ENV: production
+  # 开关 debug
+  DEBUG: True
+  # 端口
+  PORT: 8000
+  # host 默认 127.0.0.1 如果放置在 docker 中，或者其他中需要设置为0.0.0.0
+  HOST: 0.0.0.0
+
+
+# 根据 ENV 的环境读取配置
+
+DEV:
+  # service 对应 secret key
+  # 由 binascii.hexlify(os.urandom(16)) 生成
+  SERVICE_SECRET_KEY:
+    test1: '9ece197199dbae482ebdfdf1cef2d5b7'
+    test2: '1372d9ac007309f25f764dfa5b0b7706'
+    test3: '5f587f9e7c1a13945ab9912e08c6a325'
+
+  # json web token 签名发布者
+  JWT_ISS: 'https://www.35liuqi.com'
+  # json web token(JWT) 算法 , 需要安装算法库 cryptography
+  JWT_ALGORITHM: 'RS512'
+  # 客户端授权凭证  client_credentials 或 password
+  JWT_GRANT_TYPE: 'client_credentials'
+  # 签名秘钥
+  JWT_SIGNATURE_PIVE_KEY_PATH: '/Users/alexliu/private/security/self_ca_privkey.pem'
+  # 签名公钥
+  JWT_SIGNATURE_PLUB_KEY_PATH: '/Users/alexliu/private/security/self_ca_pubkey.pem'
+
+PRODUCTION:
+  # service 对应 secret key
+  # 由 binascii.hexlify(os.urandom(16)) 生成
+  SERVICE_SECRET_KEY:
+    vanas_comic_spider: '30d12288ca81b232eb0a0291582857bc'
+    vanas_comic_web: 'b76303f6ae1140baac1369b635a692a8'
+
+  # json web token 签名发布者
+  JWT_ISS: 'https://www.35liuqi.com'
+  # json web token(JWT) 算法
+  JWT_ALGORITHM: 'RS512'
+  # 客户端授权凭证，只有带此授权凭证的客户端 app 才能获取 token
+  JWT_GRANT_TYPE: 'client_credentials'
+  # 签名秘钥
+  JWT_SIGNATURE_PIVE_KEY_PATH: '/app/self_ca_privkey.pem'
+  # 签名公钥
+  JWT_SIGNATURE_PLUB_KEY_PATH: '/app/self_ca_pubkey.pem'
+
+
+
+

@@ -103,6 +103,7 @@ def openYaml(path:str):
     :param path:
     :return:
     """
+    print("openYaml path: {}".format(path))
     with open(path, 'r') as f:
         temp = yaml.load(f.read(), Loader=yaml.FullLoader)
         return temp

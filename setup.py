@@ -16,9 +16,9 @@ from setuptools import setup,find_packages
 with open('README.rst') as f:
     LONG_DESC = f.read()
 
-setup(name='VanasTokenDealer',                  # 包名
+setup(name='VanasTokenManager',                  # 包名
       version='1.0.0',                          # 项目版本号，符合 PEP 440 定义
-      url='https://github.com/liuqi0725/vanas-token-manager',  # 项目 URL，可以是代码库或者项目主页
+      url='https://github.com/liuqi0725/Vanas-Token-Manager',  # 项目 URL，可以是代码库或者项目主页
       description="This is a token manager microservice for alexliu Vanas Project.",     # 描述项目的一句话
       long_description=LONG_DESC,               # 一个 reStucturedText 格式的文档
       author='liu.qi',                          # 作者
@@ -36,7 +36,7 @@ setup(name='VanasTokenDealer',                  # 包名
       # setuptools 勾子列表，如添加控制台脚本
       entry_points="""                          
       [console_scripts]
-      tokenmanager = service.app:main
+      vanas-tkm = tokenmanager.app:main
       """,
       # 依赖项列表（一个 setuptools 参数）
       # 与 requirements.txt 冲突，在社区中推荐后者
@@ -47,5 +47,5 @@ setup(name='VanasTokenDealer',                  # 包名
       # 推荐使用 install_requires 填写然后用 pip-tools 生成依赖，自动同步 2 个地方
       # install_requires 使用未锁定版本的库名称，    requirements.txt则是当前项目锁定能运行正常的对应版本（锁定版本）
       # CLI(命令行)  `pip install pip-tools` 安装 pip-tools，然后使用  CLI pip-compile 生成 requirements.txt
-      install_requires=['Flask','PyYAML','Werkzeug','PyJWT']
+      install_requires=['Flask','PyYAML','Werkzeug','PyJWT','cryptography']
       )

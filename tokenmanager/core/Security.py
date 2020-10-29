@@ -69,14 +69,14 @@ def get_pub_key():
     获取签名公钥
     :return:
     """
-    return current_app.config['pub_key']
+    return current_app.config['JWT_SIGNATURE_PLUB_KEY']
 
 def _get_priv_key():
     """
     获取签名秘钥
     :return:
     """
-    return current_app.config['priv_key']
+    return current_app.config['JWT_SIGNATURE_PRIV_KEY']
 
 def _is_authorized_app(client_id:str, client_secret:str , grant_type:str):
     """
@@ -87,13 +87,13 @@ def _is_authorized_app(client_id:str, client_secret:str , grant_type:str):
     :return:
     """
 
-    if not current_app.config['service_secret_key'].get(client_id):
+    if not current_app.config['SERVICE_SECRET_KEY'].get(client_id):
         raise NotSupportServiceError("未知的 Service ID : [{}]. 请核实!".format(client_id))
 
-    if not compare_digest(current_app.config['service_secret_key'].get(client_id), client_secret):
+    if not compare_digest(current_app.config['SERVICE_SECRET_KEY'].get(client_id), client_secret):
         raise BadSecretKeyError("Service ID :[{}] . Secret Key Verify Error. You given a wrong secret key like '{}' . ".format(client_id,client_secret))
 
-    if not compare_digest(current_app.config['grant_type'], grant_type):
+    if not compare_digest(current_app.config['JWT_GRANT_TYPE'], grant_type):
         raise GrantTypeError("unKnow `grant_type` . Plz get it from your app development. '{}' . ".format(grant_type))
 
 
@@ -122,7 +122,7 @@ def create_token(client_id:str, client_secret:str, grant_type:str, exp_time:int=
     now = get_timestamp()
 
     token = {
-        'iss': current_app.config['jwt_iss'],   # 令牌发放者，生成令牌的实体名称。通常是一个主机名
+        'iss': current_app.config['JWT_ISS'],   # 令牌发放者，生成令牌的实体名称。通常是一个主机名
         'aud': client_id,                       # 受众：用来告知谁是令牌的接收人。客户端可以判断是否自己是接收人[接收jwt的一方]
         'iat': now,                             # 令牌发放时间
         'exp': now + exp_time,                  # 令牌到期时间
@@ -133,7 +133,7 @@ def create_token(client_id:str, client_secret:str, grant_type:str, exp_time:int=
 
     try:
         # algorithm 指定算法
-        token = jwt.encode(token, _get_priv_key(), algorithm=current_app.config['jwt_algorithm'])
+        token = jwt.encode(token, _get_priv_key(), algorithm=current_app.config['JWT_ALGORITHM'])
         return json_res_success({'access_token': token.decode('utf8')})
     except InvalidSignatureError:
         return json_res_failure("Token 签名不匹配" , TokenErrorCode.TOKEN_INVALID_SIGNATURE_ERROR)

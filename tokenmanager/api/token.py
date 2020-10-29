@@ -12,8 +12,8 @@
 
 from flask import current_app,request,Blueprint
 
-from service.core.utils import E400,render_json
-from service.core.Security import create_token,verify_token,get_pub_key
+from tokenmanager.core.utils import E400,render_json
+from tokenmanager.core.Security import create_token,verify_token,get_pub_key
 
 token = Blueprint("token" , __name__)
 
@@ -25,7 +25,7 @@ def _jwks():
     :return: json
     """
     key = {
-        "alg": current_app.config['jwt_algorithm'], # 算法
+        "alg": current_app.config['JWT_ALGORITHM'], # 算法
         "e": "AQAB",
         "n": get_pub_key(),                         # 公钥
         "kty": "RSA",

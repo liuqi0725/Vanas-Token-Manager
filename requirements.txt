@@ -4,11 +4,15 @@
 #
 #    pip-compile
 #
+cffi==1.14.3              # via cryptography
 click==7.1.2              # via flask
-flask==1.1.2              # via VanasTokenDealer (setup.py)
+cryptography==3.2.1       # via VanasTokenManager (setup.py)
+flask==1.1.2              # via VanasTokenManager (setup.py)
 itsdangerous==1.1.0       # via flask
 jinja2==2.11.2            # via flask
 markupsafe==1.1.1         # via jinja2
-pyjwt==1.7.1              # via VanasTokenDealer (setup.py)
-pyyaml==5.3.1             # via VanasTokenDealer (setup.py)
-werkzeug==1.0.1           # via VanasTokenDealer (setup.py), flask
+pycparser==2.20           # via cffi
+pyjwt==1.7.1              # via VanasTokenManager (setup.py)
+pyyaml==5.3.1             # via VanasTokenManager (setup.py)
+six==1.15.0               # via cryptography
+werkzeug==1.0.1           # via VanasTokenManager (setup.py), flask
