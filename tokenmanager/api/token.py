@@ -46,7 +46,8 @@ def generate_token():
         client_id = data.get('client_id')
         client_secret = data.get('client_secret')
         # 封装 token
-        return render_json(create_token(client_id , client_secret , grant_type))
+        res_json = create_token(client_id , client_secret , grant_type)
+        return render_json(res_json)
     except Exception as e3:
         return E400(str(e3))
 
@@ -60,6 +61,7 @@ def verify_token_data():
         # 报文要用 json报文，使用 双引号 "
         token = request.json['access_token']
         audience = request.json.get('client_id', '')
-        return render_json(verify_token(token,audience))
+        res_json = verify_token(token,audience)
+        return render_json(res_json)
     except Exception as e:
         return E400(str(e))

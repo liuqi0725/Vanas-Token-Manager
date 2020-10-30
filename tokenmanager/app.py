@@ -10,15 +10,12 @@
 # @Desc     : 启动 app
 # -------------------------------------------------------------------------------
 
+def create_app(conf_path):
+    from flask import Flask
 
-from flask import Flask
-from tokenmanager.core.utils import openYaml
-import os
-
-def create_app():
     app = Flask(__name__)
     _init_app_blueprint(app)
-    _init_app_conf(app)
+    _init_app_conf(app ,conf_path)
     return app
 
 def _init_app_blueprint(app):
@@ -31,17 +28,20 @@ def _init_app_blueprint(app):
     for bp in blueprint:
         app.register_blueprint(bp)
 
-def _init_app_conf(app):
+def _init_app_conf(app , conf_path):
     """
     初始化配置
     :param app:
     :return:
     """
+    from tokenmanager.core.utils import openYaml
+    import os
 
     # 读取配置
-    _HERE = os.path.dirname(__file__)
-    _SETTINGS_PATH = os.path.join(_HERE, 'setting.yaml')
-    conf = openYaml(_SETTINGS_PATH)
+    if conf_path is None:
+        _HERE = os.path.dirname(__file__)
+        conf_path = os.path.join(_HERE, 'settings.yaml')
+    conf = openYaml(conf_path)
 
     app.config.update(conf['SERVER'])
     app.config.update(conf[str(app.config['ENV']).upper()])
@@ -52,14 +52,3 @@ def _init_app_conf(app):
 
     with open(app.config['JWT_SIGNATURE_PLUB_KEY_PATH']) as f:
         app.config['JWT_SIGNATURE_PLUB_KEY'] = f.read()
-
-def main():
-    """
-    开始
-    :return:
-    """
-    app = create_app()
-    app.run(debug=app.config['DEBUG'], port=app.config['PORT'], host=app.config['HOST'])
-
-if __name__ == "__main__" :
-    main()

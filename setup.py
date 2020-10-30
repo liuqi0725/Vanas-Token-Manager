@@ -34,10 +34,11 @@ setup(name='VanasTokenManager',                  # 包名
       include_package_data=True,                # 一个标识，简化了包含的非 python 文件
       zip_safe=False,                           # 一个标识，他阻止 setuptools 将项目安装为 ZIP 文件，是旧标准（可执行的 eggs）
       # setuptools 勾子列表，如添加控制台脚本
-      entry_points="""                          
-      [console_scripts]
-      vanas-tkm = tokenmanager.app:main
-      """,
+      entry_points={
+        'console_scripts': [
+            'vanas-tkm = tokenmanager.run:main'
+        ]
+      },
       # 依赖项列表（一个 setuptools 参数）
       # 与 requirements.txt 冲突，在社区中推荐后者
       # 一般来说：

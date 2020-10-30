@@ -3,11 +3,6 @@ SERVER:
   ENV: production
   # 开关 debug
   DEBUG: True
-  # 端口
-  PORT: 8000
-  # host 默认 127.0.0.1 如果放置在 docker 中，或者其他中需要设置为0.0.0.0
-  HOST: 0.0.0.0
-
 
 # 根据 ENV 的环境读取配置
 
@@ -44,9 +39,9 @@ PRODUCTION:
   # 客户端授权凭证，只有带此授权凭证的客户端 app 才能获取 token
   JWT_GRANT_TYPE: 'client_credentials'
   # 签名秘钥
-  JWT_SIGNATURE_PIVE_KEY_PATH: '/app/self_ca_privkey.pem'
+  JWT_SIGNATURE_PIVE_KEY_PATH: '/app/config/self_ca_privkey.pem'
   # 签名公钥
-  JWT_SIGNATURE_PLUB_KEY_PATH: '/app/self_ca_pubkey.pem'
+  JWT_SIGNATURE_PLUB_KEY_PATH: '/app/config/self_ca_pubkey.pem'
 
 
 

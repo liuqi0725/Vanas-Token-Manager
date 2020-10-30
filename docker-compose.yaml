@@ -1,17 +1,21 @@
 version: '3' # 只支持 2 或 3
 services:
     # 可以启动多个服务
-    web1:
+    web:
         # 指定 docker file 路径 `.` 当前路径
-        build: .
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
         # 镜像名称
         image: vanas/tokenmanager
         ports:
-            - "9000:8000"
+            - "9000:5000"
         volumes:
             # 挂载磁盘
             # 挂载的磁盘内容修改后，会影响 docker 容器文件.就不用每次修改文件后都要重新 build 镜像
             # 应用被 setup 安装后， 文件在 site-packages 中
+            - /Users/alexliu/tmp/docker_logs/vanas-tokenmanager:/logs
+            - /Users/alexliu/DEV/Python-DEV/VanasTokenManager:/app
             - /Users/alexliu/DEV/Python-DEV/VanasTokenManager/tokenmanager:/usr/local/lib/python3.8/site-packages/tokenmanager
         privileged: true
         restart: always

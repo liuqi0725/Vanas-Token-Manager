@@ -14,7 +14,6 @@ from werkzeug.exceptions import HTTPException
 from flask import abort,jsonify
 import yaml,time,enum
 
-
 def E400(desc, code=400):
     """
     未知错误处理，并抛出到 error_handling 中
@@ -24,9 +23,9 @@ def E400(desc, code=400):
     """
     exc = HTTPException()
     if isinstance(code,enum.Enum):
-        exc.code = code.value
+        exc.status_code = code.value
     else:
-        exc.code = code
+        exc.status_code = code
     exc.description = desc
     return error_handling(exc)
 
@@ -38,7 +37,7 @@ def error_handling(error):
     """
     if isinstance(error, HTTPException):
         # 4xx ,5xx 错误
-        result = json_res_failure(error.description , error.code , str(error))
+        result = json_res_failure(error.description , error.status_code , str(error))
     else:
         # 500 错误
         description = abort(500).mapping.description
@@ -55,8 +54,10 @@ def render_json(jsonData):
     :return:
     """
     resp = jsonify(jsonData)
-    if 'code' in jsonData:
-        resp.status_code = jsonData['code']
+    if 'status_code' in jsonData:
+        resp.status_code = jsonData['status_code']
+    else:
+        resp.status_code = 200
     return resp
 
 def json_res_failure(desc:str,code,trace:str=""):
@@ -103,7 +104,6 @@ def openYaml(path:str):
     :param path:
     :return:
     """
-    print("openYaml path: {}".format(path))
     with open(path, 'r') as f:
         temp = yaml.load(f.read(), Loader=yaml.FullLoader)
         return temp
