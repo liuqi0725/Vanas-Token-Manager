@@ -17,7 +17,6 @@ from tokenmanager.core.Security import create_token,verify_token,get_pub_key
 
 token = Blueprint("token" , __name__)
 
-
 @token.route('/.well-known/jwks.json')
 def _jwks():
     """

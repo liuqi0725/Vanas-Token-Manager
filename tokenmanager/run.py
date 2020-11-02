@@ -43,7 +43,6 @@ def main(args=sys.argv[1:]):
     app = create_app(args.config_file)
     app.logger.info("vanas-tokenmanager create app.")
 
-
     # 默认值
     host = app.config.get('host', '0.0.0.0')
     port = app.config.get('port', 5000)

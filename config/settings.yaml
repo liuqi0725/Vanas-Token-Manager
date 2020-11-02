@@ -39,9 +39,9 @@ PRODUCTION:
   # 客户端授权凭证，只有带此授权凭证的客户端 app 才能获取 token
   JWT_GRANT_TYPE: 'client_credentials'
   # 签名秘钥
-  JWT_SIGNATURE_PIVE_KEY_PATH: '/app/config/self_ca_privkey.pem'
+  JWT_SIGNATURE_PIVE_KEY_PATH: '/keys/self_ca_privkey.pem'
   # 签名公钥
-  JWT_SIGNATURE_PLUB_KEY_PATH: '/app/config/self_ca_pubkey.pem'
+  JWT_SIGNATURE_PLUB_KEY_PATH: '/keys/self_ca_pubkey.pem'
 
 
 

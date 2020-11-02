@@ -13,9 +13,13 @@ services:
         volumes:
             # 挂载磁盘
             # 挂载的磁盘内容修改后，会影响 docker 容器文件.就不用每次修改文件后都要重新 build 镜像
-            # 应用被 setup 安装后， 文件在 site-packages 中
+            # 签名 keys 挂载在 docker 外部，这样提高安全性
+            - /Users/alexliu/private/security:/keys
+            # 挂载日志磁盘
             - /Users/alexliu/tmp/docker_logs/vanas-tokenmanager:/logs
+            # 挂载项目路径 ，开发阶段经常修改，最好在开发阶段开启此挂载
             - /Users/alexliu/DEV/Python-DEV/VanasTokenManager:/app
+            - # 应用被 setup 安装后， 文件在 site-packages 中,  在开发环境为了更新代码，应该添加此挂载
             - /Users/alexliu/DEV/Python-DEV/VanasTokenManager/tokenmanager:/usr/local/lib/python3.8/site-packages/tokenmanager
         privileged: true
         restart: always
