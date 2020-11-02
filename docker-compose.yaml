@@ -19,7 +19,7 @@ services:
             - /Users/alexliu/tmp/docker_logs/vanas-tokenmanager:/logs
             # 挂载项目路径 ，开发阶段经常修改，最好在开发阶段开启此挂载
             - /Users/alexliu/DEV/Python-DEV/VanasTokenManager:/app
-            - # 应用被 setup 安装后， 文件在 site-packages 中,  在开发环境为了更新代码，应该添加此挂载
+            # 应用被 setup 安装后， 文件在 site-packages 中,  在开发环境为了更新代码，应该添加此挂载
             - /Users/alexliu/DEV/Python-DEV/VanasTokenManager/tokenmanager:/usr/local/lib/python3.8/site-packages/tokenmanager
         privileged: true
         restart: always

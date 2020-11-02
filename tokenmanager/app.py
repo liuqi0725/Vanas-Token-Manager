@@ -46,11 +46,8 @@ def _init_app_conf(app , conf_path):
     app.config.update(conf['SERVER'])
     app.config.update(conf[str(app.config['ENV']).upper()])
 
-    app.logger.info("JWT_SIGNATURE_PIVE_KEY_PATH : %s",(app.config['JWT_SIGNATURE_PIVE_KEY_PATH']))
-
     # reading key files
     with open(app.config['JWT_SIGNATURE_PIVE_KEY_PATH']) as f:
-        app.logger.info("JWT_SIGNATURE_PIVE_KEY_PATH : %s", (f.read()))
         app.config['JWT_SIGNATURE_PRIV_KEY'] = f.read()
 
     with open(app.config['JWT_SIGNATURE_PLUB_KEY_PATH']) as f:
