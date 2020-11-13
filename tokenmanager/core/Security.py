@@ -9,6 +9,8 @@
 # 
 # @Desc     : 目的?
 # -------------------------------------------------------------------------------
+import json
+import time
 
 from flask import current_app
 from hmac import compare_digest
@@ -16,8 +18,9 @@ from hmac import compare_digest
 import jwt,enum
 
 from jwt.exceptions import InvalidKeyError, MissingRequiredClaimError
+from vanaspyhelper.util.common import md5
 
-from .ProcessError import NotSupportServiceError,BadSecretKeyError,GrantTypeError
+from .ProcessError import NotSupportServiceError, BadSecretKeyError, GrantTypeError, ClientConfigNotFound
 from .utils import get_timestamp,json_res_failure,json_res_success
 
 from jwt import InvalidSignatureError, ExpiredSignatureError, InvalidAudienceError, InvalidIssuerError, \
@@ -47,6 +50,13 @@ class TokenErrorCode(enum.Enum):
     TOKEN_IMMATURE_SIGNATURE_ERROR = 1008
     # TOKEN 关键参数缺失
     TOKEN_MISSING_REQUIRED_CLAIM_ERROR = 1009
+    # TOKEN 创建时，解密 client data 错误
+    TOKEN_DECRYPT_CLIENT_DATA_ERROR = 1010
+    # TOKEN 创建时，签名超过时限
+    TOKEN_SIGNATURE_TIMEOUT = 1020
+    # TOKEN 创建时，签名超过时限
+    TOKEN_SIGNATURE_BAD = 1030
+
 
 
     # 键值解析错误
@@ -63,6 +73,9 @@ class TokenErrorCode(enum.Enum):
     # 客户端授权认证类型错误
     GRANT_TYPE_ERROR = 1500
 
+    # 服务端的 client 配置文件无法获取
+    CLIENT_CONF_NOT_FOUND = 1600
+
 
 def get_pub_key():
     """
@@ -78,46 +91,70 @@ def _get_priv_key():
     """
     return current_app.config['JWT_SIGNATURE_PRIV_KEY']
 
-def _is_authorized_app(client_id:str, client_secret:str , grant_type:str):
+def _is_authorized_app(client_id:str, grant_type:str)->str:
     """
-    验证 service 的 secret key、grant_type。 配置参考 setting.yaml
+    验证 service 的 client、grant_type。 配置参考 setting.yaml
     :param client_id: service id
-    :param client_secret:  service secret key
     :param grant_type:  客户端授权凭证
-    :return:
+    :return: client_secret:  service secret key
     """
 
-    if not current_app.config['SERVICE_SECRET_KEY'].get(client_id):
-        raise NotSupportServiceError("未知的 Service ID : [{}]. 请核实!".format(client_id))
+    from konfig import Config
+    # 获取所有的 client id 对应的 client serct
+    c = Config(current_app.config['SECURITY_CONF_PATH'])
 
-    if not compare_digest(current_app.config['SERVICE_SECRET_KEY'].get(client_id), client_secret):
-        raise BadSecretKeyError("Service ID :[{}] . Secret Key Verify Error. You given a wrong secret key like '{}' . ".format(client_id,client_secret))
+    try:
+        clients_map = c.get_map('CLIENT_LIST')
+    except:
+        raise ClientConfigNotFound("无法获取服务端 Client 配置.请研发人员核实. PATH : {}".format(current_app.config['SECURITY_CONF_PATH']))
+
+    secret_key = clients_map.get(client_id)
+
+    if not secret_key:
+        raise NotSupportServiceError("未知的 Service ID : [{}]. 请核实!".format(client_id))
 
     if not compare_digest(current_app.config['JWT_GRANT_TYPE'], grant_type):
         raise GrantTypeError("unKnow `grant_type` . Plz get it from your app development. '{}' . ".format(grant_type))
 
+    return secret_key
 
 
-def create_token(client_id:str, client_secret:str, grant_type:str, exp_time:int=86400):
+
+def create_token(client_id:str, signature:str, timestamp:int, grant_type:str, exp_time:int=86400):
     """
     创建 token
     验证 service 的 secret key、grant_type。 配置参考 setting.yaml
-    :param client_id: service id
-    :param client_secret:  service secret key
+    :param client_id: 客户端服务 id
+    :param signature: 签名 . 加密方式 : MD5(<aes_key> + <client_secret> + <timestamp>).lower()
+                        <aes_key> 服务端 aes_key
+                        <client_secret> 客户端 秘钥
+                        <timestamp> 客户端 获取 token 时的 post 参数 timestamp , 有效时间 30 秒
     :param grant_type:  客户端授权凭证
     :param exp_time: 过期时间[秒] 默认 一天
     :return:
     """
 
-    # 验证获取 token 的 app 是否合法
+
+    # 如果 timestamp > 30 秒 无效签名
+    current_time = int(time.time())
+    if (current_time - timestamp) > 30:
+        return json_res_failure("无效 signature。请核实!", TokenErrorCode.TOKEN_SIGNATURE_TIMEOUT)
+
+    # 验证 client_id, grant_type 并获取 secret_key
     try:
-        _is_authorized_app(client_id, client_secret,grant_type)
+        secret_key = _is_authorized_app(client_id, grant_type)
     except NotSupportServiceError as e1:
         return json_res_failure(str(e1), TokenErrorCode.NOT_SUPPORT_SERVICE_ERROR)
-    except BadSecretKeyError as e2:
-        return json_res_failure(str(e2), TokenErrorCode.BAD_SECRET_KEY_ERROR)
     except GrantTypeError as e3:
         return json_res_failure(str(e3), TokenErrorCode.GRANT_TYPE_ERROR)
+    except ClientConfigNotFound as e4:
+        return json_res_failure(str(e4), TokenErrorCode.CLIENT_CONF_NOT_FOUND)
+
+    # 验证客户端签名
+    server_signature = md5(current_app.config['AES_SECRET_KEY'] + secret_key + str(timestamp)).lower()
+
+    if signature != server_signature:
+        return json_res_failure("无效 signature。请核实!", TokenErrorCode.TOKEN_SIGNATURE_BAD)
 
     now = get_timestamp()
 

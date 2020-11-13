@@ -11,6 +11,7 @@
 # -------------------------------------------------------------------------------
 
 import argparse
+import os
 import sys
 import signal
 
@@ -34,13 +35,14 @@ def main(args=sys.argv[1:]):
 
     # 添加参数
     parser.add_argument("--fd", type=int ,default=None)
-    parser.add_argument("--config-file", type=str,default=None, help="Config file path")
+    # parser.add_argument("--config-file", type=str,default=None, help="Config file path")
 
     # 解析参数
     args = parser.parse_args(args)
 
     # 创建 flask
-    app = create_app(args.config_file)
+    app = create_app(os.getenv('VANAS_TOKEN_ENV') or 'default')
+
     app.logger.info("vanas-tokenmanager create app.")
 
     # 默认值
@@ -52,7 +54,7 @@ def main(args=sys.argv[1:]):
     signal.signal(signal.SIGTERM, _quit)
 
     app.logger.info("args.fd >> {}".format(args.fd))
-    app.logger.info("args.config_file >> {}".format(args.config_file))
+    # app.logger.info("args.config_file >> {}".format(args.config_file))
 
     def runner():
 

@@ -30,3 +30,9 @@ class GrantTypeError(TokenError):
     客户端凭证错误
     """
     pass
+
+class ClientConfigNotFound(TokenError):
+    """
+    客户端配置文件找不到
+    """
+    pass

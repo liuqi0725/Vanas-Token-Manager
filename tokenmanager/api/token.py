@@ -43,9 +43,10 @@ def generate_token():
         data = request.form
         grant_type = data.get('grant_type')
         client_id = data.get('client_id')
-        client_secret = data.get('client_secret')
+        signature = data.get('signature')
+        timestamp = int(data.get('timestamp'))
         # 封装 token
-        res_json = create_token(client_id , client_secret , grant_type)
+        res_json = create_token(client_id ,signature, timestamp, grant_type)
         return render_json(res_json)
     except Exception as e3:
         return E400(str(e3))

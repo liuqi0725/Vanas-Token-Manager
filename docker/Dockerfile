@@ -21,6 +21,9 @@ RUN curl -sSL https://openresty.org/download/openresty-1.17.8.1.tar.gz \
 # 添加 ENV 指令,支持 nginx
 ENV PATH "/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:$PATH"
 
+# 设置环境变量
+ENV VANAS_TOKEN_ENV "production"
+
 # 复制 根目录(.) 所有文件到 app 中
 COPY . /app
 
@@ -30,8 +33,9 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 RUN pip install /app/
 
 # 创建日志目录，并挂载到主机目录,这样就算 docker 挂了，日志也不会销毁
-RUN mkdir /logs
-VOLUME /logs
+# 不用配置 在 circus 中挂载
+#RUN mkdir /logs
+#VOLUME /logs
 
 # 暴露端口
 EXPOSE 9000
