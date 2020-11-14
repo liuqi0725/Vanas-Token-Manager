@@ -53,7 +53,7 @@ def main(args=sys.argv[1:]):
     signal.signal(signal.SIGINT, _quit)
     signal.signal(signal.SIGTERM, _quit)
 
-    app.logger.info("args.fd >> {}".format(args.fd))
+    # app.logger.info("args.fd >> {}".format(args.fd))
     # app.logger.info("args.config_file >> {}".format(args.config_file))
 
     def runner():

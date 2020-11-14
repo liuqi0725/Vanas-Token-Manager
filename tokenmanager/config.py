@@ -37,17 +37,19 @@ class config:
         else:
             log_level = "error"
 
+        # 初始化日志对象
+        log = init_global_logger(log_dir, level=log_level, log_prefix="VanasToken")
+
         from konfig import Config
         # 初始化 aes
+        log.info("初始化 AES 配置")
         c = Config(app.config['SECURITY_CONF_PATH'])
         app.config.update(c.get_map('AES'))
 
         global aes
         aes = AESTool(key=c.get_map('AES').get('AES_SECRET_KEY'))
 
-        # 初始化日志对象
-        init_global_logger(log_dir, level=log_level, log_prefix="VanasToken")
-
+        log.info("初始化 Signature 秘钥配置.")
         # reading key files
         with open(app.config['JWT_SIGNATURE_PIVE_KEY_PATH']) as f:
             app.config['JWT_SIGNATURE_PRIV_KEY'] = f.read()

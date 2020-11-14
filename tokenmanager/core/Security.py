@@ -54,7 +54,7 @@ class TokenErrorCode(enum.Enum):
     TOKEN_DECRYPT_CLIENT_DATA_ERROR = 1010
     # TOKEN 创建时，签名超过时限
     TOKEN_SIGNATURE_TIMEOUT = 1020
-    # TOKEN 创建时，签名超过时限
+    # TOKEN 创建时，签名无效
     TOKEN_SIGNATURE_BAD = 1030
 
 
