@@ -53,11 +53,6 @@ def generate_token():
         signature = data.get('signature', '')
         timestamp = int(data.get('timestamp', '0'))
 
-        # data = request.form
-        # grant_type = data.get('grant_type')
-        # client_id = data.get('client_id')
-        # signature = data.get('signature')
-        # timestamp = int(data.get('timestamp'))
         # 封装 token
         res_json = create_token(client_id ,signature, timestamp, grant_type)
         log.info("处理请求：创建 token . Result: %s ", res_json)

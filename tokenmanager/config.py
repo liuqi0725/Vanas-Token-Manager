@@ -44,7 +44,8 @@ class config:
         # 初始化 aes
         log.info("初始化 AES 配置")
         c = Config(app.config['SECURITY_CONF_PATH'])
-        app.config.update(c.get_map('AES'))
+        # 不保存到配置中
+        # app.config.update(c.get_map('AES'))
 
         global aes
         aes = AESTool(key=c.get_map('AES').get('AES_SECRET_KEY'))

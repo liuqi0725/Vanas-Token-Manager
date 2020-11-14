@@ -150,8 +150,8 @@ def create_token(client_id:str, signature:str, timestamp:int, grant_type:str, ex
     except ClientConfigNotFound as e4:
         return json_res_failure(str(e4), TokenErrorCode.CLIENT_CONF_NOT_FOUND)
 
-    # 验证客户端签名
-    server_signature = md5(current_app.config['AES_SECRET_KEY'] + secret_key + str(timestamp)).lower()
+    # 验证客户端签名  md5(client_secret_key + timestamp).lower()
+    server_signature = md5(secret_key + str(timestamp)).lower()
 
     if signature != server_signature:
         return json_res_failure("无效 signature。请核实!", TokenErrorCode.TOKEN_SIGNATURE_BAD)
