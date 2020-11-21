@@ -13,8 +13,8 @@
 from setuptools import setup,find_packages
 
 # Readme
-with open('README.rst') as f:
-    README_DESC = f.read()
+# with open('README.rst') as f:
+#     README_DESC = f.read()
 
 # with open('requirements.txt') as f:
 #     deps = [dep for dep in f.read().split('\n') if dep.strip() != '']
@@ -26,7 +26,7 @@ setup(name='VanasTokenManager',                  # 包名
       version='1.0.0',                          # 项目版本号，符合 PEP 440 定义
       url='https://github.com/liuqi0725/Vanas-Token-Manager',  # 项目 URL，可以是代码库或者项目主页
       description="This is a token manager microservice for alexliu Vanas Project.",     # 描述项目的一句话
-      long_description=README_DESC,               # 一个 reStucturedText 格式的文档
+      # long_description=README_DESC,               # 一个 reStucturedText 格式的文档
       author='liu.qi',                          # 作者
       author_email='liuqi_0725@aliyun.com',     # 作者邮箱
       license='Apache2',                        # 项目使用的许可信息 （MIT Apache2 GPL 等）
